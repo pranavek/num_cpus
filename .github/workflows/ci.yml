@@ -25,6 +25,11 @@ jobs:
         with:
           toolchain: stable
           override: true
+
+      # 32-bit requires multilib.
+      - name: Install xmllint
+        run: sudo apt-get install gcc-multilib
+
       - name: Build and Test
         run: |
           export ${{ matrix.env }}
@@ -40,7 +45,7 @@ jobs:
       matrix:
         target:
           # Mac OS X
-          - x86_64-apple-darwin
+          #- x86_64-apple-darwin
           # IOS
           - x86_64-apple-ios
 

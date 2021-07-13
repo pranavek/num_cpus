@@ -12,9 +12,9 @@ jobs:
         env:
           # Linux
           # Minimum Supported Rust Version
-          - TARGET=x86_64-unknown-linux-gnu RUN=1 NO_ADD=1
+          #- TARGET=x86_64-unknown-linux-gnu RUN=1 NO_ADD=1
           # TODO 32-bit
-          #- TARGET=i686-unknown-linux-gnu RUN=1
+          - TARGET=i686-unknown-linux-gnu RUN=1
           # TODO Fuchsia
           #- TARGET=x86_64-fuchsia
 
@@ -27,7 +27,7 @@ jobs:
           override: true
 
       # 32-bit requires multilib.
-      - name: Install xmllint
+      - name: Install dependencies
         run: sudo apt-get install gcc-multilib
 
       - name: Build and Test

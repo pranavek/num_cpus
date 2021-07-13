@@ -3,29 +3,57 @@ on: [push, pull_request]
 name: Rust CI
 
 jobs:
-  build:
-    name: Build
+  linux:
+    name: Build and Test (Linux)
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         env:
           # Linux
           # Minimum Supported Rust Version
           - TARGET=x86_64-unknown-linux-gnu RUN=1 NO_ADD=1
-          # 32-bit
-          - TARGET=i686-unknown-linux-gnu RUN=1
-          # Fuchsia
-          - TARGET=x86_64-fuchsia
+          # TODO 32-bit
+          #- TARGET=i686-unknown-linux-gnu RUN=1
+          # TODO Fuchsia
+          #- TARGET=x86_64-fuchsia
 
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: nightly
           override: true
-      - name: Build and test
+      - name: Build and Test
         run: |
           export ${{ matrix.env }}
-          if [ -z "$NO_ADD" ]; then rustup target add "$TARGET"; fi
+          if [ -z "${NO_ADD}" ]; then rustup target add "${TARGET}"; fi
           cargo build --verbose --target="${TARGET}"
           if [ "${RUN}" == "1" ]; then cargo test --verbose --target "${TARGET}"; fi
+
+  mac:
+    name: Build and Test (Mac)
+    runs-on: macOS-latest
+
+    strategy:
+      matrix:
+        env:
+          # Linux
+          # Minimum Supported Rust Version
+          - TARGET=x86_64-apple-darwin
+          # 32-bit
+          - TARGET=x86_64-apple-ios
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+      - name: Build and Test
+        run: |
+          export ${{ matrix.env }}
+          if [ -z "${NO_ADD}" ]; then rustup target add "${TARGET}"; fi
+          cargo build --verbose --target="${TARGET}"

@@ -50,8 +50,9 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          target: ${{ matrix.target }}
           override: true
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --verbose --target=${{ matrix.target }}
+          args: --verbose 

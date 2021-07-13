@@ -1,6 +1,6 @@
 on: [push, pull_request]
 
-name: Rust CI
+name: CI
 
 jobs:
   linux:
@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           override: true
       - name: Build and Test
         run: |
@@ -38,22 +38,20 @@ jobs:
 
     strategy:
       matrix:
-        env:
-          # Linux
-          # Minimum Supported Rust Version
-          - TARGET=x86_64-apple-darwin
-          # 32-bit
-          - TARGET=x86_64-apple-ios
+        target:
+          # Mac OS X
+          - x86_64-apple-darwin
+          # IOS
+          - x86_64-apple-ios
 
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           override: true
-      - name: Build and Test
-        run: |
-          export ${{ matrix.env }}
-          if [ -z "${NO_ADD}" ]; then rustup target add "${TARGET}"; fi
-          cargo build --verbose --target="${TARGET}"
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --verbose --target=${{ matrix.target }}

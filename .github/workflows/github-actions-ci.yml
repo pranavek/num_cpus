@@ -11,7 +11,7 @@ jobs:
         env:
           # Linux
           # Minimum Supported Rust Version
-          - TARGET=x86_64-unknown-linux-gnu RUN=1
+          - TARGET=x86_64-unknown-linux-gnu RUN=1 NO_ADD=1
           # Fuchsia
           - TARGET=x86_64-fuchsia
     steps:
@@ -19,10 +19,10 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: ${{ matrix.target }}
           override: true
       - name: Build and test
         run: |
           export ${{ matrix.env }}
+          if [ -z "$NO_ADD" ]; then rustup target add "$TARGET"; fi
           cargo build --verbose --target="${TARGET}"
           if [ "${RUN}" == "1" ]; then cargo test --verbose --target "${TARGET}"; fi
